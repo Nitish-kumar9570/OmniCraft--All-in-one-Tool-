@@ -1,7 +1,8 @@
 {
-  "name": "temp-app",
-  "version": "0.1.0",
+  "name": "omnicraft",
+  "version": "1.0.0",
   "private": true,
+  "description": "OmniCraft — Every tool you need. One place. Massive all-in-one free online tools platform.",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,13 +10,33 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@supabase/ssr": "^0.12.5",
+    "@supabase/supabase-js": "^2.112.4",
+    "canvas-confetti": "^1.9.4",
+    "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
+    "diff": "^9.0.0",
+    "jsbarcode": "^3.12.3",
+    "lucide-react": "^1.35.0",
     "next": "16.3.3",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^2.4.5",
+    "qrcode": "^1.5.4",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-markdown": "^10.1.0",
+    "remark-gfm": "^4.0.1",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/crypto-js": "^4.2.2",
+    "@types/diff": "^7.0.2",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.5",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
