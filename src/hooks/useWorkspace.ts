@@ -21,20 +21,24 @@ export function useWorkspace() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        setItems(JSON.parse(stored));
-      }
-    } catch {}
+    if (typeof window !== "undefined") {
+      try {
+        const stored = window.localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          setItems(JSON.parse(stored));
+        }
+      } catch {}
+    }
     setIsLoaded(true);
   }, []);
 
   const saveItems = useCallback((newItems: WorkspaceItem[]) => {
     setItems(newItems);
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newItems));
-    } catch {}
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(newItems));
+      } catch {}
+    }
   }, []);
 
   const addItem = useCallback((item: Omit<WorkspaceItem, "id" | "timestamp">) => {
@@ -45,9 +49,11 @@ export function useWorkspace() {
     };
     setItems((prev) => {
       const updated = [newItem, ...prev].slice(0, 50); // cap at 50 local items
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch {}
+      if (typeof window !== "undefined") {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        } catch {}
+      }
       return updated;
     });
     return newItem;
@@ -56,18 +62,22 @@ export function useWorkspace() {
   const removeItem = useCallback((id: string) => {
     setItems((prev) => {
       const updated = prev.filter((i) => i.id !== id);
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-      } catch {}
+      if (typeof window !== "undefined") {
+        try {
+          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        } catch {}
+      }
       return updated;
     });
   }, []);
 
   const clearWorkspace = useCallback(() => {
     setItems([]);
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {}
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.removeItem(STORAGE_KEY);
+      } catch {}
+    }
   }, []);
 
   return {

@@ -10,22 +10,23 @@ export function useMemory() {
   const { success } = useToast();
   const [memories, setMemories] = useState<MemoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [settings, setSettings] = useState<MemorySettingsState>(() => {
+  const [settings, setSettings] = useState<MemorySettingsState>({ enabled: true, autoRemember: false });
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("omnicraft_memory_settings");
-      if (saved) {
-        try {
-          return JSON.parse(saved);
-        } catch {}
-      }
+      try {
+        const saved = window.localStorage.getItem("omnicraft_memory_settings");
+        if (saved) {
+          setSettings(JSON.parse(saved));
+        }
+      } catch {}
     }
-    return { enabled: true, autoRemember: false };
-  });
+  }, []);
 
   const fetchMemories = useCallback(() => {
     try {
       if (typeof window !== "undefined") {
-        const saved = localStorage.getItem(MEMORY_STORAGE_KEY);
+        const saved = window.localStorage.getItem(MEMORY_STORAGE_KEY);
         if (saved) {
           setMemories(JSON.parse(saved));
         } else {
@@ -47,7 +48,7 @@ export function useMemory() {
     setMemories(items);
     if (typeof window !== "undefined") {
       try {
-        localStorage.setItem(MEMORY_STORAGE_KEY, JSON.stringify(items));
+        window.localStorage.setItem(MEMORY_STORAGE_KEY, JSON.stringify(items));
       } catch {}
     }
   };
@@ -56,7 +57,9 @@ export function useMemory() {
     setSettings((prev) => {
       const updated = { ...prev, ...newSettings };
       if (typeof window !== "undefined") {
-        localStorage.setItem("omnicraft_memory_settings", JSON.stringify(updated));
+        try {
+          window.localStorage.setItem("omnicraft_memory_settings", JSON.stringify(updated));
+        } catch {}
       }
       return updated;
     });

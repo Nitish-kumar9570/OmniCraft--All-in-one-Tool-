@@ -85,17 +85,18 @@ function LibraryContent() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Snippets local storage state
-  const [snippets, setSnippets] = useState<LibrarySnippet[]>(() => {
+  const [snippets, setSnippets] = useState<LibrarySnippet[]>(DEFAULT_SNIPPETS);
+
+  useEffect(() => {
     if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("nova_library_snippets");
-      if (saved) {
-        try {
-          return JSON.parse(saved);
-        } catch {}
-      }
+      try {
+        const saved = window.localStorage.getItem("nova_library_snippets");
+        if (saved) {
+          setSnippets(JSON.parse(saved));
+        }
+      } catch {}
     }
-    return DEFAULT_SNIPPETS;
-  });
+  }, []);
 
   const [isAddSnippetOpen, setIsAddSnippetOpen] = useState(false);
   const [newTitle, setNewTitle] = useState("");
@@ -107,7 +108,9 @@ function LibraryContent() {
   const saveSnippets = (updated: LibrarySnippet[]) => {
     setSnippets(updated);
     if (typeof window !== "undefined") {
-      localStorage.setItem("nova_library_snippets", JSON.stringify(updated));
+      try {
+        window.localStorage.setItem("nova_library_snippets", JSON.stringify(updated));
+      } catch {}
     }
   };
 

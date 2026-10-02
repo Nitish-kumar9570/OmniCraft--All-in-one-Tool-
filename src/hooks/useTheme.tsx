@@ -75,11 +75,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         ? (document.cookie.match(/(?:^|;\s*)omnicraft_theme=([^;]+)/)?.[1] as Theme | null)
         : null;
 
+      const storage = typeof window !== "undefined" ? window.localStorage : null;
       const saved = (
-        localStorage.getItem(THEME_STORAGE_KEY) ||
+        storage?.getItem(THEME_STORAGE_KEY) ||
         cookieTheme ||
-        localStorage.getItem("omnicraft_theme") ||
-        localStorage.getItem("nova_theme")
+        storage?.getItem("omnicraft_theme") ||
+        storage?.getItem("nova_theme")
       ) as Theme | null;
 
       if (saved && (saved === "light" || saved === "dark" || saved === "system")) {
@@ -99,7 +100,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (!mounted) return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
     const handleChange = () => {
       if (theme === "system") {
         applyThemeToDOM("system");
@@ -115,7 +115,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setThemeState(newTheme);
       applyThemeToDOM(newTheme);
       try {
-        localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+        }
         const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
         document.cookie = `${THEME_STORAGE_KEY}=${encodeURIComponent(newTheme)}; path=/; max-age=31536000; SameSite=Lax${isHttps ? "; Secure" : ""}`;
       } catch {}

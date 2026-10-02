@@ -29,19 +29,23 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize from localStorage
   useEffect(() => {
+    if (typeof window === "undefined") {
+      setIsLoaded(true);
+      return;
+    }
     try {
-      const saved = localStorage.getItem("omnicraft_favorites");
+      const saved = window.localStorage.getItem("omnicraft_favorites");
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) {
           setFavorites(parsed);
         } else {
           setFavorites(DEFAULT_FAVORITES);
-          localStorage.setItem("omnicraft_favorites", JSON.stringify(DEFAULT_FAVORITES));
+          window.localStorage.setItem("omnicraft_favorites", JSON.stringify(DEFAULT_FAVORITES));
         }
       } else {
         setFavorites(DEFAULT_FAVORITES);
-        localStorage.setItem("omnicraft_favorites", JSON.stringify(DEFAULT_FAVORITES));
+        window.localStorage.setItem("omnicraft_favorites", JSON.stringify(DEFAULT_FAVORITES));
       }
     } catch {
       setFavorites(DEFAULT_FAVORITES);
@@ -67,9 +71,11 @@ export function FavoritesProvider({ children }: { children: React.ReactNode }) {
 
   const saveFavorites = useCallback((items: string[]) => {
     setFavorites(items);
-    try {
-      localStorage.setItem("omnicraft_favorites", JSON.stringify(items));
-    } catch {}
+    if (typeof window !== "undefined") {
+      try {
+        window.localStorage.setItem("omnicraft_favorites", JSON.stringify(items));
+      } catch {}
+    }
   }, []);
 
   const isFavorite = useCallback(

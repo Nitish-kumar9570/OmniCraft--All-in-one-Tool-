@@ -8,18 +8,18 @@ export interface HistoryItem {
 }
 
 export function useHistory() {
-  const [history, setHistory] = useState<HistoryItem[]>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("omnicraft_history");
-      if (saved) {
-        try { return JSON.parse(saved); } catch {}
-      }
-    }
-    return [];
-  });
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = window.localStorage.getItem("omnicraft_history");
+        if (saved) {
+          setHistory(JSON.parse(saved));
+        }
+      } catch {}
+    }
     setIsLoaded(true);
   }, []);
 
@@ -28,7 +28,7 @@ export function useHistory() {
       const filtered = prev.filter((item) => item.toolId !== toolId);
       const updated = [{ toolId, usedAt: new Date().toISOString() }, ...filtered].slice(0, 30);
       if (typeof window !== "undefined") {
-        localStorage.setItem("omnicraft_history", JSON.stringify(updated));
+        window.localStorage.setItem("omnicraft_history", JSON.stringify(updated));
       }
       return updated;
     });
@@ -44,7 +44,7 @@ export function useHistory() {
   const clearHistory = useCallback(() => {
     setHistory([]);
     if (typeof window !== "undefined") {
-      localStorage.removeItem("omnicraft_history");
+      window.localStorage.removeItem("omnicraft_history");
     }
   }, []);
 

@@ -27,7 +27,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       try {
-        const saved = localStorage.getItem(PROFILE_KEY);
+        const saved = window.localStorage.getItem(PROFILE_KEY);
         if (saved) {
           const parsed = JSON.parse(saved);
           setFullName(parsed.fullName || "Local User");
@@ -48,7 +48,7 @@ export default function ProfilePage() {
     setIsSaving(true);
     try {
       if (typeof window !== "undefined") {
-        localStorage.setItem(
+        window.localStorage.setItem(
           PROFILE_KEY,
           JSON.stringify({
             fullName: fullName.trim(),
